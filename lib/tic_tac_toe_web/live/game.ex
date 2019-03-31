@@ -2,27 +2,32 @@ defmodule TicTacToeWeb.GameLive do
   use Phoenix.LiveView
 
   def render(%{game: game}) do
-    case game do
-      %TicTacToe.Game{state: {:winner, winner}} ->
-        render_winner(winner)
+    case TicTacToe.state(game) do
+      :winner ->
+        render_winner(game)
 
-      %TicTacToe.Game{state: :tie} ->
+      :tie ->
         render_tie()
 
-      %TicTacToe.Game{state: {:in_progress, _}} ->
-        render_board(game, TicTacToe.in_progress?(game))
+      :in_progress ->
+        render_board(game)
     end
   end
 
-  def render_winner(winner, assigns \\ %{}) do
-    ~L(<p><%= winner %> wins!</p><button phx-click="replay">Replay</button>)
+  def render_winner(game, assigns \\ %{}) do
+    ~L"""
+      <p><%= TicTacToe.winner(game) %> wins!</p>
+      <button phx-click="replay">Replay</button>
+    """
   end
 
   def render_tie(assigns \\ %{}) do
-    ~L(<p>It's a tie!</p><button phx-click="replay">Replay</button>)
+    ~L"""
+      <p>It's a tie!</p><button phx-click="replay">Replay</button>
+    """
   end
 
-  def render_board(game, active?, assigns \\ %{}) do
+  def render_board(game, assigns \\ %{}) do
     ~L"""
     <style>
       td {
@@ -32,36 +37,32 @@ defmodule TicTacToeWeb.GameLive do
       }
     </style>
     <table>
-      <%= for row <- board_rows(game) do %>
-        <%= render_row(row, active?) %>
+      <%= for row <- TicTacToe.board(game) do %>
+        <%= render_row(row) %>
       <% end %>
     <table>
     """
   end
 
-  def board_rows(%TicTacToe.Game{board: board}) do
-    for x <- 1..3 do
-      for y <- 1..3 do
-        %{x: x, y: y, mark: board[x][y]}
-      end
-    end
-  end
-
-  def render_row(row, active?, assigns \\ %{}) do
+  def render_row(row, assigns \\ %{}) do
     ~L"""
       <tr>
         <%= for square <- row do %>
-        <%= render_square(square, active?) %>
+        <%= render_square(square) %>
         <% end %>
       </tr>
     """
   end
 
-  def render_square(%{x: x, y: y, mark: mark}, active?, assigns \\ %{}) do
-    if active? and !mark do
-      ~L(<td phx-click="mark" phx-value="[<%= x %>, <%= y %>]"><%= mark %></td>)
+  def render_square(%{x: x, y: y, mark: mark}, assigns \\ %{}) do
+    if mark do
+      ~L"""
+        <td><%= mark %></td>
+      """
     else
-      ~L(<td><%= mark %></td>)
+      ~L"""
+        <td phx-click="mark" phx-value="[<%= x %>, <%= y %>]"><%= mark %></td>
+      """
     end
   end
 
