@@ -30,6 +30,12 @@ defmodule TicTacToe do
     not Board.empty?(board)
   end
 
+  def in_progress?(%Game{state: {:in_progress, _}}), do: true
+  def in_progress?(%Game{}), do: false
+
+  def current_player(%Game{state: {:in_progress, player}}), do: player
+  def current_player(%Game{}), do: nil
+
   def mark(game, player, position) do
     with {:ok, game} <- do_mark(game, player, position),
          do: {:ok, maybe_end_game(game)}
@@ -42,11 +48,11 @@ defmodule TicTacToe do
     do: {:error, :game_already_over}
 
   defp do_mark(%Game{}, player, {_x, _y})
-       when player not in [:x, :y],
+       when player not in [:x, :o],
        do: {:error, :invalid_player}
 
-  defp do_mark(%Game{state: {:in_progress, next_player}}, player, {_x, _y})
-       when next_player != player,
+  defp do_mark(%Game{state: {:in_progress, current}}, player, {_x, _y})
+       when current != player,
        do: {:error, :out_of_turn}
 
   defp do_mark(%Game{}, _player, {x, y}) when x < 1 or x > 3 or y < 1 or y > 3,
@@ -58,7 +64,7 @@ defmodule TicTacToe do
         {:ok,
          %Game{
            game
-           | state: {:in_progress, next_player(player)},
+           | state: {:in_progress, toggle_player(player)},
              board: update_in(game.board, [x, y], fn _ -> player end)
          }}
 
@@ -67,8 +73,8 @@ defmodule TicTacToe do
     end
   end
 
-  defp next_player(:x), do: :y
-  defp next_player(:y), do: :x
+  defp toggle_player(:x), do: :o
+  defp toggle_player(:o), do: :x
 
   defp maybe_end_game(%Game{board: board} = game) do
     winner = check_rows(board) || check_columns(board) || check_diagonals(board)

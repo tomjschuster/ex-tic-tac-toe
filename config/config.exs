@@ -1,30 +1,18 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-# This configuration is loaded before any dependency and is restricted
-# to this project. If another project depends on this project, this
-# file won't be loaded nor affect the parent project. For this reason,
-# if you want to provide default values for your application for
-# third-party users, it should be done in your "mix.exs" file.
+config :tic_tac_toe, TicTacToeWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: System.get_env("SECRET_KEY_BASE") || "keyboardcat",
+  render_errors: [view: TicTacToeWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: TicTacToe.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [signing_salt: System.get_env("LIVE_VIEW_SALT") || "NaCl"]
 
-# You can configure your application as:
-#
-#     config :tic_tac_toe, key: :value
-#
-# and access this configuration in your application as:
-#
-#     Application.get_env(:tic_tac_toe, :key)
-#
-# You can also configure a third-party app:
-#
-#     config :logger, level: :info
-#
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
 
-# It is also possible to import configuration files, relative to this
-# directory. For example, you can emulate configuration per environment
-# by uncommenting the line below and defining dev.exs, test.exs and such.
-# Configuration from the imported file will override the ones defined
-# here (which is why it is important to import them last).
-#
-#     import_config "#{Mix.env()}.exs"
+config :phoenix, :json_library, Jason
+
+config :phoenix, :template_engines, leex: Phoenix.LiveView.Engine
+
+import_config "#{Mix.env()}.exs"
