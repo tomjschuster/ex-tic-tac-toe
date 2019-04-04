@@ -1,4 +1,4 @@
-defmodule TicTacToeWeb.GameLive do
+defmodule TicTacToeWeb.TicTacToeLive do
   use Phoenix.LiveView
 
   def render(%{game: game}) do
@@ -54,16 +54,18 @@ defmodule TicTacToeWeb.GameLive do
     """
   end
 
-  def render_square(%{x: x, y: y, mark: mark}, assigns \\ %{}) do
-    if mark do
-      ~L"""
-        <td><%= mark %></td>
-      """
-    else
-      ~L"""
-        <td phx-click="mark" phx-value="[<%= x %>, <%= y %>]"><%= mark %></td>
-      """
-    end
+  def render_square(square, assigns \\ %{})
+
+  def render_square(%{x: x, y: y, mark: nil}, assigns) do
+    ~L"""
+    <td phx-click="mark" phx-value="[<%= x %>, <%= y %>]"></td>
+    """
+  end
+
+  def render_square(%{mark: mark}, assigns) do
+    ~L"""
+      <td><%= mark %></td>
+    """
   end
 
   def mount(_session, socket) do

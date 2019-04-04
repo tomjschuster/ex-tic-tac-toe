@@ -17,6 +17,6 @@ defmodule TicTacToeWeb.Router do
 
   scope "/", TicTacToeWeb do
     pipe_through(:browser)
-    live("/", GameLive)
+    live("/", TicTacToeLive)
   end
 end
