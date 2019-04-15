@@ -4,7 +4,8 @@ defmodule TicTacToeTest do
 
   test "creates a new game where x goes first" do
     game = TicTacToe.new_game()
-    assert game.state == {:in_progress, :x}
+    assert TicTacToe.state(game) == :in_progress
+    assert TicTacToe.current_player(game) == :x
   end
 
   test "fails when player goes out of turn" do
@@ -69,7 +70,8 @@ defmodule TicTacToeTest do
            {:ok, game1} <- TicTacToe.mark(game1, :o, {2, 2}),
            do: TicTacToe.mark(game1, :x, {3, 1})
 
-    assert game1.state == {:winner, :x}
+    assert TicTacToe.state(game1) == :winner
+    assert TicTacToe.winner(game1) == :x
 
     {:ok, game2} =
       with game2 <- TicTacToe.new_game(),
@@ -79,7 +81,8 @@ defmodule TicTacToeTest do
            {:ok, game2} <- TicTacToe.mark(game2, :o, {2, 3}),
            do: TicTacToe.mark(game2, :x, {3, 2})
 
-    assert game2.state == {:winner, :x}
+    assert TicTacToe.state(game2) == :winner
+    assert TicTacToe.winner(game2) == :x
 
     {:ok, game3} =
       with game3 <- TicTacToe.new_game(),
@@ -89,7 +92,8 @@ defmodule TicTacToeTest do
            {:ok, game3} <- TicTacToe.mark(game3, :o, {2, 2}),
            do: TicTacToe.mark(game3, :x, {3, 3})
 
-    assert game3.state == {:winner, :x}
+    assert TicTacToe.state(game3) == :winner
+    assert TicTacToe.winner(game3) == :x
   end
 
   test "wins with columns" do
@@ -101,7 +105,8 @@ defmodule TicTacToeTest do
            {:ok, game1} <- TicTacToe.mark(game1, :o, {2, 2}),
            do: TicTacToe.mark(game1, :x, {1, 3})
 
-    assert game1.state == {:winner, :x}
+    assert TicTacToe.state(game1) == :winner
+    assert TicTacToe.winner(game1) == :x
 
     {:ok, game2} =
       with game2 <- TicTacToe.new_game(),
@@ -111,7 +116,8 @@ defmodule TicTacToeTest do
            {:ok, game2} <- TicTacToe.mark(game2, :o, {1, 2}),
            do: TicTacToe.mark(game2, :x, {2, 3})
 
-    assert game2.state == {:winner, :x}
+    assert TicTacToe.state(game2) == :winner
+    assert TicTacToe.winner(game2) == :x
 
     {:ok, game3} =
       with game3 <- TicTacToe.new_game(),
@@ -121,7 +127,8 @@ defmodule TicTacToeTest do
            {:ok, game3} <- TicTacToe.mark(game3, :o, {1, 2}),
            do: TicTacToe.mark(game3, :x, {3, 3})
 
-    assert game3.state == {:winner, :x}
+    assert TicTacToe.state(game3) == :winner
+    assert TicTacToe.winner(game3) == :x
   end
 
   test "wins with diagonals" do
@@ -133,7 +140,8 @@ defmodule TicTacToeTest do
            {:ok, game1} <- TicTacToe.mark(game1, :o, {3, 1}),
            do: TicTacToe.mark(game1, :x, {3, 3})
 
-    assert game1.state == {:winner, :x}
+    assert TicTacToe.state(game1) == :winner
+    assert TicTacToe.winner(game1) == :x
 
     {:ok, game2} =
       with game2 <- TicTacToe.new_game(),
@@ -143,7 +151,8 @@ defmodule TicTacToeTest do
            {:ok, game2} <- TicTacToe.mark(game2, :o, {3, 3}),
            do: TicTacToe.mark(game2, :x, {3, 1})
 
-    assert game2.state == {:winner, :x}
+    assert TicTacToe.state(game2) == :winner
+    assert TicTacToe.winner(game2) == :x
   end
 
   test "y can win" do
@@ -156,7 +165,8 @@ defmodule TicTacToeTest do
            {:ok, game} <- TicTacToe.mark(game, :x, {3, 1}),
            do: TicTacToe.mark(game, :o, {2, 3})
 
-    assert game.state == {:winner, :o}
+    assert TicTacToe.state(game) == :winner
+    assert TicTacToe.winner(game) == :o
   end
 
   test "tie when whole board filled without winner" do
@@ -172,6 +182,6 @@ defmodule TicTacToeTest do
            {:ok, game} <- TicTacToe.mark(game, :o, {3, 3}),
            do: TicTacToe.mark(game, :x, {2, 3})
 
-    assert game.state == :tie
+    assert TicTacToe.state(game) == :tie
   end
 end
