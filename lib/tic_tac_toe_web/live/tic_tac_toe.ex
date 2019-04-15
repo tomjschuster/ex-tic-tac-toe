@@ -29,13 +29,7 @@ defmodule TicTacToeWeb.TicTacToeLive do
 
   def render_board(game, assigns \\ %{}) do
     ~L"""
-    <style>
-      td {
-        width: 50px;
-        height: 50px;
-        border: 1px solid black;
-      }
-    </style>
+    <style>td { width: 50px; height: 50px; border: 1px solid black; }</style>
     <table>
       <%= for row <- TicTacToe.board(game) do %>
         <%= render_row(row) %>
